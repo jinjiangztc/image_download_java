@@ -1,4 +1,4 @@
-package com.runimg.api;
+package com.runimg.api.imagedownload;
 
 import java.io.File;
 import java.io.FileOutputStream;
