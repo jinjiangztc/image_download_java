@@ -63,7 +63,7 @@ public class SignatureUtil {
 		return "http://www.runimg.com/services.php/lastupdate?" + parameter;
 	}
 
-	public static String encodeBase64(byte[] input) {
+	private static String encodeBase64(byte[] input) {
 		try {
 			@SuppressWarnings("rawtypes")
 			Class clazz = Class
@@ -78,7 +78,7 @@ public class SignatureUtil {
 		}
 	}
 
-	public static byte[] HmacSHA1Encrypt(String encryptText, String encryptKey) {
+	private static byte[] HmacSHA1Encrypt(String encryptText, String encryptKey) {
 		try {
 
 			byte[] data = encryptKey.getBytes(ENCODING);
