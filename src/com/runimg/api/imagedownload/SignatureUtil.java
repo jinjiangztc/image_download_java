@@ -2,9 +2,12 @@ package com.runimg.api.imagedownload;
 
 import java.lang.reflect.Method;
 import java.net.URLEncoder;
+
 import javax.crypto.Mac;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
+
+import net.sf.json.JSONObject;
 
 public class SignatureUtil {
 
@@ -12,7 +15,7 @@ public class SignatureUtil {
 	private static final String ENCODING = "UTF-8";
 
 	@SuppressWarnings("deprecation")
-	public static String getRequestUrl(String expired, String img_opt,
+	private static String getRequestUrl(String expired, String img_opt,
 			String img_type, String timestamp, String token_id, String version,
 			String token_key) {
 		String[] key = { "expired", "img_opt", "img_type", "timestamp",
@@ -51,9 +54,9 @@ public class SignatureUtil {
 		if (raw_string.endsWith("&")) {
 			raw_string = raw_string.substring(0, raw_string.length() - 1);
 		}
-//		System.err.println(raw_string);
+		// System.err.println(raw_string);
 		String signature = encodeBase64(HmacSHA1Encrypt(raw_string, token_key));
-//		System.err.println(signature);
+		// System.err.println(signature);
 		parameter += URLEncoder.encode("signature").replace("+", "%20")
 				.replace("*", "%2A").replace("%7E", "~")
 				+ "=";
@@ -97,9 +100,23 @@ public class SignatureUtil {
 
 		}
 	}
-	
-	public static void main(String[] args) {
-		System.err.println(SignatureUtil.getRequestUrl("3600", "{\"h\":250,\"w\":250}", "4d", "1460295881372", "123456789ABCDEF0", "1.0", "0123456789ABCDEF"));;
+
+	private static String getImageUrl(String html) {
+		JSONObject jsonObject = JSONObject.fromObject(html);
+
+		return ((String) jsonObject.get("url")).replaceAll("\\\\", "");
 	}
+
+	public static void downloadImage(String expired, String img_opt,
+			String img_type, String timestamp, String token_id, String version,
+			String token_key, String savePath, String filename) {
+
+		String requestUrl = getRequestUrl(expired, img_opt, img_type,
+				timestamp, token_id, version, token_key);
+		String html = DownloadUtil.downloadHtml(requestUrl);
+		String imageUrl = getImageUrl(html);
+		DownloadUtil.downloadImage(imageUrl, "c:\\image\\", "51bi.gif");
+	}
+
 
 }

@@ -55,8 +55,6 @@ public class DownloadUtil {
 
 			// 构造URL
 			URL url = new URL(htmlUrl);
-			System.err.println(url.getHost());
-			System.err.println(url.getProtocol());
 			// 打开连接
 			URLConnection con = url.openConnection();
 			// 设置请求超时为5s
