@@ -119,6 +119,10 @@ public class ImageOperator {
 		  return true;
 	}
 
+	/*
+	 * 比较疑惑
+	 */
+	
 	boolean setImageClipper(int x, int y, int width, int height) {
 		if(clipper_w_ < 1
 			      || clipper_w_ > 4096
