@@ -41,7 +41,8 @@ public class UrlCreator {
 
 	}
 
-	private String CalculateSignature(Map<String, String> key_values, String token_key) {
+	private String CalculateSignature(Map<String, String> key_values,
+			String token_key) {
 		return null;
 	}
 
