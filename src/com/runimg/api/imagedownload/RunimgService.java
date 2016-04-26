@@ -9,53 +9,21 @@ import java.io.OutputStream;
 import java.net.URL;
 import java.net.URLConnection;
 
+import net.sf.json.JSONObject;
+
 import com.runimg.api.imagedownload.module.UpdateStanza;
 
 public class RunimgService {
-	public static UpdateStanza getImageUrl(String urlBase,UrlCreator urlCreator) {
+
+	private static final String baseUrl = "http://www.runimg.com/services.php/lastupdate?";
+
+	public static UpdateStanza getImageUrl(String urlBase, UrlCreator urlCreator) {
+
+		String server_url = urlBase + urlCreator.toString();
+		// 构造URL
 
 		try {
-
-			// 构造URL
-			URL url = new URL(imageUrl);
-			// 打开连接
-			URLConnection con = url.openConnection();
-			// 设置请求超时为5s
-			con.setConnectTimeout(5 * 1000);
-			// 输入流
-			InputStream is = con.getInputStream();
-
-			// 10K的数据缓冲
-			byte[] bs = new byte[10 * 1024];
-			// 读取到的数据长度
-			int len;
-			// 输出的文件流
-			File sf = new File(savePath);
-			if (!sf.exists()) {
-				sf.mkdirs();
-			}
-			OutputStream os = new FileOutputStream(sf.getPath() + "\\"
-					+ filename);
-			// 开始读取
-			while ((len = is.read(bs)) != -1) {
-				os.write(bs, 0, len);
-			}
-			// 完毕，关闭所有链接
-			os.close();
-			is.close();
-			return true;
-		} catch (Exception exception) {
-			throw new RuntimeException(exception.getMessage(), exception);
-		}
-
-	}
-
-	public static String downloadHtml(String htmlUrl) {
-
-		try {
-
-			// 构造URL
-			URL url = new URL(htmlUrl);
+			URL url = new URL(server_url);
 			// 打开连接
 			URLConnection con = url.openConnection();
 			// 设置请求超时为5s
@@ -72,7 +40,7 @@ public class RunimgService {
 			}
 			br.close();
 			isr.close();
-			return html.toString();
+			return parseStanza(html.toString());
 			// 开始读取
 		} catch (Exception exception) {
 			throw new RuntimeException(exception.getMessage(), exception);
@@ -80,8 +48,49 @@ public class RunimgService {
 
 	}
 
-	 public static void main(String[] args) throws Exception {
-	 downloadImage("http://rammb.cira.colostate.edu/ramsdis/online/images/hi_res/himawari-8/full_disk_ahi_true_color/full_disk_ahi_true_color_20160410100000.jpg","c:\\image\\","51bi.gif");
-	 }
+	public static boolean getImageByUrl(String imageUrl) {
+		try {
+
+			// 构造URL
+			URL url = new URL(imageUrl);
+			// 打开连接
+			URLConnection con = url.openConnection();
+			// 设置请求超时为5s
+			con.setConnectTimeout(5 * 1000);
+			// 输入流
+			InputStream is = con.getInputStream();
+
+			// 10K的数据缓冲
+			byte[] bs = new byte[10 * 1024];
+			// 读取到的数据长度
+			int len;
+			// 输出的文件流
+			// // File sf = new File(savePath);
+			// if (!sf.exists()) {
+			// sf.mkdirs();
+			// }
+			// OutputStream os = new FileOutputStream(sf.getPath() + "\\"
+			// + filename);
+			// // 开始读取
+			// while ((len = is.read(bs)) != -1) {
+			// os.write(bs, 0, len);
+			// }
+			// // 完毕，关闭所有链接
+			// os.close();
+			// is.close();
+			return true;
+		} catch (Exception exception) {
+			throw new RuntimeException(exception.getMessage(), exception);
+		}
+
+	}
+
+	private static UpdateStanza parseStanza(String html) {
+		JSONObject jsonObject = JSONObject.fromObject(html);
+
+		UpdateStanza updateStanza = (UpdateStanza) JSONObject.toBean(
+				jsonObject, UpdateStanza.class);
+		return updateStanza;
+	}
 
 }

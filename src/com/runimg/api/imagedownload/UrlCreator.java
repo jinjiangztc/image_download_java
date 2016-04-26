@@ -1,12 +1,20 @@
 package com.runimg.api.imagedownload;
 
+import java.lang.reflect.Method;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.crypto.Mac;
+import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
+
 import com.runimg.api.imagedownload.module.ImageType;
 
 public class UrlCreator {
+
+	private static final String MAC_NAME = "HmacSHA1";
+	private static final String ENCODING = "UTF-8";
 
 	String tokenId;
 	String secretKey;
@@ -15,7 +23,9 @@ public class UrlCreator {
 	String timestamp;
 	int expired = 3600;
 	String version = "1.0";
-	Map<String, String> keyValues = new HashMap<String, String>();
+
+	String startTime;
+	String endTime;
 
 	public UrlCreator(String tokenId, String secretKey, ImageType imageType,
 			int expired, ImageOperator imageOperator) {
@@ -27,31 +37,118 @@ public class UrlCreator {
 		this.imageOperator = imageOperator;
 		timestamp = String.valueOf(new Date().getTime());
 
-		keyValues.put("expired", String.valueOf(expired));
-		keyValues.put("img_opt", imageOperator.toString());
-		keyValues.put("img_type", imageType.toString());
-		keyValues.put("timestamp", timestamp);
-		keyValues.put("token_id", tokenId);
-		keyValues.put("version", version);
-
 	}
 
 	public final String toUrlString() {
-		return null;
+
+		Map<String, String> keyValues = new HashMap<String, String>();
+		keyValues.put("token_id", tokenId);
+		keyValues.put("expired", String.valueOf(expired));
+
+		keyValues.put("img_type", imageType.imageTypeToString());
+		if (imageOperator != null) {
+			keyValues.put("img_opt", imageOperator.toString());
+		}
+		keyValues.put("timestamp", String.valueOf(new Date().getTime()));
+		keyValues.put("version", version);
+		keyValues.put("rec_inv", recordIntervalTime());
+		keyValues.put("ignature", calculateSignature(keyValues, secretKey));
+		return calculateParameters(keyValues);
 
 	}
 
-	private String CalculateSignature(Map<String, String> key_values,
+	private String calculateSignature(Map<String, String> keyValues,
 			String token_key) {
+		String keyString = "";
+
+		for (String key : keyValues.keySet()) {
+			keyString += key + "=" + keyValues.get(key) + "&";
+		}
+		if (keyString.endsWith("&")) {
+			keyString = keyString.substring(0, keyString.length() - 1);
+		}
+
+		try {
+			return encodeBase64(HmacSHA1Encrypt(keyString, token_key));
+		} catch (Exception e) {
+			Log.logDebug(e.getMessage());
+		}
 		return null;
 	}
 
-	private String CalculateParameters(Map<String, String> key_values) {
-		return null;
+	private String calculateParameters(Map<String, String> keyValues) {
+
+		String keyString = "";
+		for (String key : keyValues.keySet()) {
+			keyString += java.net.URLEncoder.encode(key).replace("+", "%20")
+					.replace("*", "%2A").replace("~", "%2A")
+					+ "=";
+
+			if (key.equals("img_opt")) {
+				keyString += java.net.URLEncoder
+						.encode(encodeBase64(keyValues.get(key).getBytes()))
+						.replace("+", "%20").replace("*", "%2A")
+						.replace("~", "%2A")
+						+ "&";
+			} else {
+				keyString += java.net.URLEncoder.encode(keyValues.get(key))
+						.replace("+", "%20").replace("*", "%2A")
+						.replace("~", "%2A")
+						+ "&";
+			}
+
+		}
+
+		return keyString;
 	}
 
 	String ImageTypeToString(ImageType image_type) {
 		return null;
 
+	}
+
+	String recordIntervalTime() {
+		// Json::Value value;
+		// Json::FastWriter fw;
+		// value[JSON_RECORD_START_INTERVAL] = start_time_;
+		// value[JSON_RECORD_END_INTERVAL] = end_time_;
+		// return runimg::Base64::Encode(fw.write(value));
+
+		return null;
+	}
+
+	public static String encodeBase64(byte[] input) {
+
+		try {
+
+			Class clazz = Class
+					.forName("com.sun.org.apache.xerces.internal.impl.dv.util.Base64");
+			Method mainMethod = clazz.getMethod("encode", byte[].class);
+			mainMethod.setAccessible(true);
+			Object retObj = mainMethod.invoke(null, new Object[] { input });
+			return (String) retObj;
+		} catch (Exception message) {
+			Log.logDebug(message.getMessage());
+		}
+		return null;
+	}
+
+	public static byte[] HmacSHA1Encrypt(String encryptText, String encryptKey) {
+		try {
+			byte[] data = encryptKey.getBytes(ENCODING);
+			// 根据给定的字节数组构造一个密钥,第二参数指定一个密钥算法的名称
+			SecretKey secretKey = new SecretKeySpec(data, MAC_NAME);
+			// 生成一个指定 Mac 算法 的 Mac 对象
+			Mac mac = Mac.getInstance(MAC_NAME);
+			// 用给定密钥初始化 Mac 对象
+			mac.init(secretKey);
+
+			byte[] text = encryptText.getBytes(ENCODING);
+			// 完成 Mac 操作
+			return mac.doFinal(text);
+		} catch (Exception message) {
+			Log.logDebug(message.getMessage());
+		}
+		return null;
 	}
 }
