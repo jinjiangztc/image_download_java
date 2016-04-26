@@ -3,16 +3,16 @@ package com.runimg.api.imagedownload.module;
 public enum ClipperDirect {
 	CLIPPER_X {
 		@Override
-		String clipperDirectToString() {
+		public String clipperDirectToString() {
 			return "x";
 		}
 	},
 	CLIPPER_Y {
 		@Override
-		String clipperDirectToString() {
+		public String clipperDirectToString() {
 			return "y";
 		}
 	};
 
-	abstract String clipperDirectToString();
+	public abstract String clipperDirectToString();
 };

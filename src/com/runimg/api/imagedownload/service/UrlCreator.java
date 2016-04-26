@@ -1,6 +1,5 @@
-package com.runimg.api.imagedownload;
+package com.runimg.api.imagedownload.service;
 
-import java.lang.reflect.Method;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -10,6 +9,8 @@ import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
 import com.runimg.api.imagedownload.module.ImageType;
+import com.runimg.api.imagedownload.util.Base64Util;
+import com.runimg.api.imagedownload.util.Log;
 
 public class UrlCreator {
 
@@ -69,13 +70,14 @@ public class UrlCreator {
 		}
 
 		try {
-			return encodeBase64(HmacSHA1Encrypt(keyString, token_key));
+			return Base64Util.encodeBase64(HmacSHA1Encrypt(keyString, token_key));
 		} catch (Exception e) {
-			Log.logDebug(e.getMessage());
+			Log.logError(e.getMessage());
 		}
 		return null;
 	}
 
+	@SuppressWarnings("deprecation")
 	private String calculateParameters(Map<String, String> keyValues) {
 
 		String keyString = "";
@@ -86,7 +88,7 @@ public class UrlCreator {
 
 			if (key.equals("img_opt")) {
 				keyString += java.net.URLEncoder
-						.encode(encodeBase64(keyValues.get(key).getBytes()))
+						.encode(Base64Util.encodeBase64(keyValues.get(key).getBytes()))
 						.replace("+", "%20").replace("*", "%2A")
 						.replace("~", "%2A")
 						+ "&";
@@ -117,21 +119,7 @@ public class UrlCreator {
 		return null;
 	}
 
-	public static String encodeBase64(byte[] input) {
-
-		try {
-
-			Class clazz = Class
-					.forName("com.sun.org.apache.xerces.internal.impl.dv.util.Base64");
-			Method mainMethod = clazz.getMethod("encode", byte[].class);
-			mainMethod.setAccessible(true);
-			Object retObj = mainMethod.invoke(null, new Object[] { input });
-			return (String) retObj;
-		} catch (Exception message) {
-			Log.logDebug(message.getMessage());
-		}
-		return null;
-	}
+	
 
 	public static byte[] HmacSHA1Encrypt(String encryptText, String encryptKey) {
 		try {
@@ -147,7 +135,7 @@ public class UrlCreator {
 			// 完成 Mac 操作
 			return mac.doFinal(text);
 		} catch (Exception message) {
-			Log.logDebug(message.getMessage());
+			Log.logError(message.getMessage());
 		}
 		return null;
 	}

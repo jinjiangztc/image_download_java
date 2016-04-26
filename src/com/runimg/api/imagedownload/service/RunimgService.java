@@ -1,4 +1,4 @@
-package com.runimg.api.imagedownload;
+package com.runimg.api.imagedownload.service;
 
 import java.io.BufferedReader;
 import java.io.File;

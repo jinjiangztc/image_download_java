@@ -1,19 +1,23 @@
-package com.runimg.api.imagedownload;
+package com.runimg.api.imagedownload.service;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import org.apache.log4j.PropertyConfigurator;
+
+import net.sf.json.JSONObject;
+
 import com.runimg.api.imagedownload.module.ClipperDirect;
 import com.runimg.api.imagedownload.module.ClipperType;
 import com.runimg.api.imagedownload.module.ImageFormat;
 import com.runimg.api.imagedownload.module.ProgressiveType;
+import com.runimg.api.imagedownload.util.Log;
 
 public class ImageOperator {
 
-	private static final int NOT_ASSIGNMENT = -1;
-
+	private static final int NOT_ASSIGNMENT = 0x7fffffff;
 	private static final int MAX_IMAGE_PROCESS_SIZE = 4096;
 	private static final int MIN_IMAGE_PROCESS_SIZE = 1;
-
 	private static final int MIN_PROPORTION_VALUE = 1;
 	private static final int MAX_PROPORTION_VALUE = 1000;
 
@@ -65,7 +69,7 @@ public class ImageOperator {
 		if (isProcess) {
 			this.isProcess = 0;
 		} else {
-			this.isProcess = -1;
+			this.isProcess = 1;
 		}
 
 		return true;
@@ -118,12 +122,10 @@ public class ImageOperator {
 		this.clipperChunk = chunk;
 		this.clipperDirect = clipper_direct;
 		this.clipperIndex = index;
+
 		return true;
 	}
 
-	/*
-	 * 比较疑惑
-	 */
 	boolean setImageClipper(int x, int y, int width, int height) {
 		if (clipperW < MIN_IMAGE_PROCESS_SIZE
 				|| clipperW > MAX_IMAGE_PROCESS_SIZE
@@ -136,6 +138,7 @@ public class ImageOperator {
 		this.clipperY = y;
 		this.clipperW = width;
 		this.clipperH = height;
+
 		return true;
 	}
 
@@ -159,11 +162,11 @@ public class ImageOperator {
 	}
 
 	boolean setImageBlurry(int radius, int sigma) {
-		if (this.blurryRadius < 1 || this.blurryRadius > 50) {
+		if (blurryRadius < 1 || blurryRadius > 50) {
 			Log.logInfo("The Blurry radius out of the range [1, 50]");
 			return false;
 		}
-		if (this.blurrySigma < 1 || this.blurrySigma > 50) {
+		if (blurrySigma < 1 || blurrySigma > 50) {
 			Log.logInfo("The Blurry sigma out of the range [1, 50]");
 			return false;
 		}
@@ -182,7 +185,7 @@ public class ImageOperator {
 	}
 
 	boolean setImageContrast(int contrast) {
-		if (this.contrast < -100 || this.contrast > 100) {
+		if (contrast < -100 || contrast > 100) {
 			Log.logInfo("The image contrast out of range [-100, 100]");
 			return false;
 		}
@@ -219,97 +222,105 @@ public class ImageOperator {
 	}
 
 	//
-	boolean setImageFormat(ImageFormat image_format) {
+	boolean setImageFormat(ImageFormat imageFormat) {
+		if (imageFormat == null) {
+			Log.logInfo("The image format settings failure");
+			return false;
+		}
+		this.imageFormat = imageFormat;
 		return true;
 	}
 
 	public String toString() {
-		// Map<String , String>keyValues = new HashMap<String, String>();
-		// if(this.zoomHeight != NOT_ASSIGNMENT) {
-		// keyValues.put("h", String.valueOf(this.zoomHeight));
-		// }
-		// if(this.zoomWidth != NOT_ASSIGNMENT) {
-		// keyValues.put("w", String.valueOf(this.zoomWidth));
-		// }
-		// if(this.isProcess!= NOT_ASSIGNMENT) {
-		// value[JSON_IMAGE_ZOOM_IS_PROCESS] = 0;
-		// }
-		// if(this.proportion!= NOT_ASSIGNMENT) {
-		// value[JSON_IMAGE_ZOOM_PROPORTION] = this.proportion;
-		// }
-		// // 2. Clipper Settings
-		// if(this.clipperHeight != NOT_ASSIGNMENT
-		// && clipperWidth != NOT_ASSIGNMENT
-		// && clipperRect > 0 && clipperRect < 10) {
-		// std::stringstream ss;
-		// ss << clipperHeight_ << "x" << clipperWidth << "-" << clipperRect;
-		// value[JSON_CLIPPER_RECT] = ss.str();
-		// }
-		// if(clipperRadius != NOT_ASSIGNMENT
-		// && clipperType!=null) {
-		// std::stringstream ss;
-		// ss << clipper_radius_ << "-" << ClipperTypeToUint32(clipper_type_);
-		// value[JSON_CLIPPER_RADIOUS] = ss.str();
-		// }
-		// if(clipperChunk != NOT_ASSIGNMENT
-		// && clipperIndex != NOT_ASSIGNMENT
-		// && ClipperDirectToString(clipper_direct_) != NULL) {
-		// std::stringstream ss;
-		// ss << clipper_chunk_ << ClipperDirectToString(clipper_direct_)
-		// << "-" << clipper_index_;
-		// value[JSON_CLIPPER_INDEX] = ss.str();
-		// }
-		// if(clipperX != NOT_ASSIGNMENT
-		// && clipperY != NOT_ASSIGNMENT
-		// && clipperW != NOT_ASSIGNMENT
-		// && clipperH != NOT_ASSIGNMENT) {
-		// std::stringstream ss;
-		// ss << clipper_x_ << "-" << clipper_y_ << "-"
-		// << clipper_w_ << "-" << clipper_h_;
-		// value[JSON_CLIPPER_POINT] = ss.str();
-		// }
-		// // Rotator
-		// if(rotation != NOT_ASSIGNMENT) {
-		// value[JSON_ROTATION] = rotation_;
-		// }
-		// // Sharpen
-		// if(imageSharpen!= NOT_ASSIGNMENT) {
-		// value[JSON_SHARPEN] = imageSharpen;
-		// }
-		// // Blurry
-		// if(blurryRadius != NOT_ASSIGNMENT && blurrySigma != NOT_ASSIGNMENT) {
-		// std::stringstream ss;
-		// ss << blurry_radius_ << "-" << blurrySigma;
-		// value[JSON_BLURRY] = ss.str();
-		// }
-		// // Brightness
-		// if(brightness!= NOT_ASSIGNMENT) {
-		// value[JSON_BRIGHTNESS] = brightness;
-		// }
-		// // Contrast
-		// if(contrast!= NOT_ASSIGNMENT) {
-		// value[JSON_CONTRAST] = contrast;
-		// }
-		// // Format
-		// if(imageFormat!= null
-		// && imageFormat!= ImageFormat.FORMAT_SRC) {
-		// value[JSON_IMAGE_FORMAT] = imageformat.;
-		// }
-		// if(imageFormat == ImageFormat.FORMAT_JPG && jpgRelativeQulity !=
-		// NOT_ASSIGNMENT) {
-		// value[JSON_JPG_RELATIVE_QULITY] = jpg_relative_qulity_;
-		// }
-		// if(image_format_ == FORMAT_JPG && jpg_absolutely_qulity_ !=
-		// NOT_ASSIGNMENT) {
-		// value[JSON_JPG_ABSOLUTELY_QULITY] = jpg_absolutely_qulity_;
-		// }
-		// if(image_format_ == FORMAT_JPG
-		// && ProgressiveToUint32(progressive_) != NOT_ASSIGNMENT) {
-		// value[JSON_JPG_PROGRESSIVE] = ProgressiveToUint32(progressive_);
-		// }
-		// Json::FastWriter fw;
-		// return runimg::Base64::Encode(fw.write(value));
+		Map<String, Object> keyValues = new HashMap<String, Object>();
+		// 1. Zoom Settings
+		if (zoomHeight != NOT_ASSIGNMENT) {
+			keyValues.put("h", zoomHeight);
+		}
+		if (zoomWidth != NOT_ASSIGNMENT) {
+			keyValues.put("w", zoomWidth);
+		}
+		if (isProcess != NOT_ASSIGNMENT) {
+			keyValues.put("l", 0);
+		}
+		if (proportion != NOT_ASSIGNMENT) {
+			keyValues.put("p", proportion);
+		}
+		// 2. Clipper Settings
+		if (clipperHeight != NOT_ASSIGNMENT && clipperWidth != NOT_ASSIGNMENT
+				&& clipperRect > 0 && clipperRect < 10) {
+			keyValues.put("rc", clipperHeight + "x" + clipperWidth + "-"
+					+ clipperRect);
+		}
+		if (clipperRadius != NOT_ASSIGNMENT && clipperType != null) {
+			keyValues.put("ci",
+					clipperRadius + "-" + clipperType.clipperTypeToInt());
 
-		return null;
+		}
+		if (clipperChunk != NOT_ASSIGNMENT && clipperIndex != NOT_ASSIGNMENT
+				&& clipperDirect != null) {
+
+			keyValues.put("ic",
+					clipperChunk + clipperDirect.clipperDirectToString() + "-"
+							+ clipperIndex);
+		}
+		if (clipperX != NOT_ASSIGNMENT && clipperY != NOT_ASSIGNMENT
+				&& clipperW != NOT_ASSIGNMENT && clipperH != NOT_ASSIGNMENT) {
+
+			keyValues.put("a", clipperX + "-" + clipperY + "-" + clipperW + "-"
+					+ clipperH);
+		}
+		// Rotator
+		if (rotation != NOT_ASSIGNMENT) {
+			keyValues.put("r", rotation);
+		}
+		// Sharpen
+		if (imageSharpen != NOT_ASSIGNMENT) {
+			keyValues.put("sh", imageSharpen);
+		}
+		// Blurry
+		if (blurryRadius != NOT_ASSIGNMENT && blurrySigma != NOT_ASSIGNMENT) {
+			keyValues.put("bl", blurryRadius + "-" + blurrySigma);
+		}
+		// Brightness
+		if (brightness != NOT_ASSIGNMENT) {
+			keyValues.put("b", brightness);
+		}
+		// Contrast
+		if (contrast != NOT_ASSIGNMENT) {
+			keyValues.put("d", contrast);
+		}
+		// Format
+		if (imageFormat != null && imageFormat != ImageFormat.FORMAT_SRC) {
+			keyValues.put("format", imageFormat.imageFormatToString());
+		}
+		if (imageFormat == ImageFormat.FORMAT_JPG
+				&& jpgRelativeQulity != NOT_ASSIGNMENT) {
+			keyValues.put("q", jpgRelativeQulity);
+		}
+		if (imageFormat == ImageFormat.FORMAT_JPG
+				&& jpgAbsolutelyQulity != NOT_ASSIGNMENT) {
+			keyValues.put("Q", jpgAbsolutelyQulity);
+		}
+		if (imageFormat == ImageFormat.FORMAT_JPG && progressive != null) {
+
+			keyValues.put("pr", progressive.progressiveToInt());
+
+		}
+		JSONObject json = JSONObject.fromObject(keyValues);
+		System.out.println(json.toString());//
+
+//		return Base64Util.encodeBase64(json.toString().getBytes());
+		return json.toString();
 	}
+	
+	public static void main(String[] args) {
+		
+		PropertyConfigurator.configure("log4j.properties");
+		ImageOperator imageOperator =  new ImageOperator();
+		imageOperator.setImageContrast(1);
+		System.err.println(imageOperator.toString());
+		
+	}
+
 }
