@@ -1,21 +1,24 @@
 package com.runimg.api.imagedownload.module;
 
-import java.util.Date;
+import java.util.List;
 
 public class UpdateStanza {
 
 	int status;
-	String date;
-	Date timestamp;
-	String url;
-
-	@Override
-	public boolean equals(Object obj) {
-		if (obj instanceof UpdateStanza) {
-			UpdateStanza temp = (UpdateStanza) obj;
-
-		}
-
-		return false;
+	List<Record> records;
+	public int getStatus() {
+		return status;
 	}
+	public void setStatus(int status) {
+		this.status = status;
+	}
+	public List<Record> getRecords() {
+		return records;
+	}
+	public void setRecords(List<Record> records) {
+		this.records = records;
+	}
+	
+	
+
 }

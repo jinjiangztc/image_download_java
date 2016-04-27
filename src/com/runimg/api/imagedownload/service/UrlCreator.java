@@ -1,5 +1,6 @@
 package com.runimg.api.imagedownload.service;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -7,6 +8,8 @@ import java.util.Map;
 import javax.crypto.Mac;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
+
+import net.sf.json.JSONObject;
 
 import com.runimg.api.imagedownload.module.ImageType;
 import com.runimg.api.imagedownload.util.Base64Util;
@@ -17,16 +20,16 @@ public class UrlCreator {
 	private static final String MAC_NAME = "HmacSHA1";
 	private static final String ENCODING = "UTF-8";
 
-	String tokenId;
-	String secretKey;
-	ImageType imageType;
-	ImageOperator imageOperator = null;
-	String timestamp;
-	int expired = 3600;
-	String version = "1.0";
+	private String tokenId;
+	private String secretKey;
+	private ImageType imageType;
+	private ImageOperator imageOperator = null;
+	private Long timestamp;
+	private int expired = 3600;
+	private String version = "1.0";
 
-	String startTime;
-	String endTime;
+	private Long startTime;
+	private Long endTime;
 
 	public UrlCreator(String tokenId, String secretKey, ImageType imageType,
 			int expired, ImageOperator imageOperator) {
@@ -36,13 +39,14 @@ public class UrlCreator {
 		this.imageType = imageType;
 		this.expired = expired;
 		this.imageOperator = imageOperator;
-		timestamp = String.valueOf(new Date().getTime());
+
+		timestamp = new Date().getTime();
 
 	}
 
 	public final String toUrlString() {
 
-		Map<String, String> keyValues = new HashMap<String, String>();
+		Map<String, Object> keyValues = new HashMap<String, Object>();
 		keyValues.put("token_id", tokenId);
 		keyValues.put("expired", String.valueOf(expired));
 
@@ -50,76 +54,74 @@ public class UrlCreator {
 		if (imageOperator != null) {
 			keyValues.put("img_opt", imageOperator.toString());
 		}
-		keyValues.put("timestamp", String.valueOf(new Date().getTime()));
-		keyValues.put("version", version);
-		keyValues.put("rec_inv", recordIntervalTime());
-		keyValues.put("ignature", calculateSignature(keyValues, secretKey));
+		 keyValues.put("timestamp", String.valueOf(timestamp/1000));
+		 keyValues.put("version", version);
+		 keyValues.put("rec_inv", recordIntervalTime());
+		keyValues.put("signature", calculateSignature(keyValues, secretKey));
 		return calculateParameters(keyValues);
 
 	}
 
-	private String calculateSignature(Map<String, String> keyValues,
-			String token_key) {
+	private String calculateSignature(Map<String, Object> keyValues,
+			String tokenKey) {
 		String keyString = "";
 
-		for (String key : keyValues.keySet()) {
-			keyString += key + "=" + keyValues.get(key) + "&";
+		Object[] keys = keyValues.keySet().toArray();
+		Arrays.sort(keys);
+
+		for (Object object : keys) {
+			keyString += object + "=" + keyValues.get(object) + "&";
 		}
 		if (keyString.endsWith("&")) {
 			keyString = keyString.substring(0, keyString.length() - 1);
 		}
-
 		try {
-			return Base64Util.encodeBase64(HmacSHA1Encrypt(keyString, token_key));
+			return Base64Util
+					.encodeBase64(HmacSHA1Encrypt(keyString, tokenKey));
 		} catch (Exception e) {
 			Log.logError(e.getMessage());
+			throw new RuntimeException(e.getMessage(), e);
 		}
-		return null;
 	}
 
 	@SuppressWarnings("deprecation")
-	private String calculateParameters(Map<String, String> keyValues) {
+	private String calculateParameters(Map<String, Object> keyValues) {
 
 		String keyString = "";
-		for (String key : keyValues.keySet()) {
-			keyString += java.net.URLEncoder.encode(key).replace("+", "%20")
-					.replace("*", "%2A").replace("~", "%2A")
-					+ "=";
+		Object[] keys = keyValues.keySet().toArray();
+		Arrays.sort(keys);
 
-			if (key.equals("img_opt")) {
-				keyString += java.net.URLEncoder
-						.encode(Base64Util.encodeBase64(keyValues.get(key).getBytes()))
-						.replace("+", "%20").replace("*", "%2A")
-						.replace("~", "%2A")
-						+ "&";
-			} else {
-				keyString += java.net.URLEncoder.encode(keyValues.get(key))
-						.replace("+", "%20").replace("*", "%2A")
-						.replace("~", "%2A")
-						+ "&";
-			}
+		for (Object object : keys) {
+			keyString += java.net.URLEncoder.encode((String) object)
+					.replace("+", "%20").replace("*", "%2A")
+					.replace("~", "%2A")
+					+ "=";
+			keyString += java.net.URLEncoder
+					.encode(((String) keyValues.get(object)))
+					.replace("+", "%20").replace("*", "%2A")
+					.replace("~", "%2A")
+					+ "&";
 
 		}
-
+		if (keyString.endsWith("&")) {
+			keyString = keyString.substring(0, keyString.length() - 1);
+		}
 		return keyString;
 	}
 
-	String ImageTypeToString(ImageType image_type) {
+	public String ImageTypeToString(ImageType image_type) {
 		return null;
 
 	}
 
 	String recordIntervalTime() {
-		// Json::Value value;
-		// Json::FastWriter fw;
-		// value[JSON_RECORD_START_INTERVAL] = start_time_;
-		// value[JSON_RECORD_END_INTERVAL] = end_time_;
-		// return runimg::Base64::Encode(fw.write(value));
 
-		return null;
+		Map<String, Object> keyValues = new HashMap<String, Object>();
+		keyValues.put("st", startTime);
+		keyValues.put("et", endTime);
+		JSONObject json = JSONObject.fromObject(keyValues);
+		return Base64Util.encodeBase64(json.toString().getBytes());
 	}
-
-	
 
 	public static byte[] HmacSHA1Encrypt(String encryptText, String encryptKey) {
 		try {
@@ -139,4 +141,9 @@ public class UrlCreator {
 		}
 		return null;
 	}
+	public boolean setRecordInterval(Long startTime, Long endTime) {
+		  this.startTime = startTime;
+		  this.endTime   = endTime;
+		  return true;
+		}
 }

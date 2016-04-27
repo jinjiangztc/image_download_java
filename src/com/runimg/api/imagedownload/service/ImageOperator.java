@@ -11,11 +11,12 @@ import com.runimg.api.imagedownload.module.ClipperDirect;
 import com.runimg.api.imagedownload.module.ClipperType;
 import com.runimg.api.imagedownload.module.ImageFormat;
 import com.runimg.api.imagedownload.module.ProgressiveType;
+import com.runimg.api.imagedownload.util.Base64Util;
 import com.runimg.api.imagedownload.util.Log;
 
 public class ImageOperator {
 
-	private static final int NOT_ASSIGNMENT = 0x7fffffff;
+	private static final int NOT_ASSIGNMENT = 0xffffffff;
 	private static final int MAX_IMAGE_PROCESS_SIZE = 4096;
 	private static final int MIN_IMAGE_PROCESS_SIZE = 1;
 	private static final int MIN_PROPORTION_VALUE = 1;
@@ -55,7 +56,7 @@ public class ImageOperator {
 	int clipperH = NOT_ASSIGNMENT;
 	ProgressiveType progressive = null;
 
-	boolean setImageZoom(int height, int width, boolean isProcess) {
+	public boolean setImageZoom(int height, int width, boolean isProcess) {
 
 		if (height < MIN_IMAGE_PROCESS_SIZE || height > MAX_IMAGE_PROCESS_SIZE
 				|| width < MIN_IMAGE_PROCESS_SIZE
@@ -75,7 +76,7 @@ public class ImageOperator {
 		return true;
 	}
 
-	boolean setImageZoom(int proportion) {
+	public boolean setImageZoom(int proportion) {
 		if (proportion < MIN_PROPORTION_VALUE
 				|| proportion > MAX_PROPORTION_VALUE) {
 			Log.logInfo("输入值超过范围:proportion[1~1000]");
@@ -87,7 +88,7 @@ public class ImageOperator {
 	}
 
 	//
-	boolean setImageClipper(int height, int width, int rect) {
+	public boolean setImageClipper(int height, int width, int rect) {
 		if (height < MIN_IMAGE_PROCESS_SIZE || height > MAX_PROPORTION_VALUE
 				|| width < MIN_IMAGE_PROCESS_SIZE
 				|| width > MAX_PROPORTION_VALUE || rect < 1 || rect > 9) {
@@ -101,7 +102,7 @@ public class ImageOperator {
 		return true;
 	}
 
-	boolean setImageClipper(int radius, ClipperType clipperType) {
+	public boolean setImageClipper(int radius, ClipperType clipperType) {
 
 		if (radius < 1 || radius > 4096) {
 			Log.logInfo("The clipper radius out of the range [1, 4096]");
@@ -117,7 +118,7 @@ public class ImageOperator {
 
 	}
 
-	boolean setImageClipper(int chunk, ClipperDirect clipper_direct, int index) {
+	public boolean setImageClipper(int chunk, ClipperDirect clipper_direct, int index) {
 
 		this.clipperChunk = chunk;
 		this.clipperDirect = clipper_direct;
@@ -126,7 +127,7 @@ public class ImageOperator {
 		return true;
 	}
 
-	boolean setImageClipper(int x, int y, int width, int height) {
+	public boolean setImageClipper(int x, int y, int width, int height) {
 		if (clipperW < MIN_IMAGE_PROCESS_SIZE
 				|| clipperW > MAX_IMAGE_PROCESS_SIZE
 				|| clipperH < MIN_IMAGE_PROCESS_SIZE
@@ -143,7 +144,7 @@ public class ImageOperator {
 	}
 
 	//
-	boolean setImageRotator(int rotation) {
+	public boolean setImageRotator(int rotation) {
 		if (rotation > 360 || rotation < 0) {
 			Log.logInfo("The rotation out of the range [0, 360]");
 			return false;
@@ -153,7 +154,7 @@ public class ImageOperator {
 	}
 
 	//
-	boolean setImageSharpen(int sharpening) {
+	public boolean setImageSharpen(int sharpening) {
 		if (sharpening < 50 || sharpening > 399) {
 			Log.logInfo("The image sharpen out of the range [50, 399]");
 		}
@@ -161,7 +162,7 @@ public class ImageOperator {
 		return true;
 	}
 
-	boolean setImageBlurry(int radius, int sigma) {
+	public boolean setImageBlurry(int radius, int sigma) {
 		if (blurryRadius < 1 || blurryRadius > 50) {
 			Log.logInfo("The Blurry radius out of the range [1, 50]");
 			return false;
@@ -175,7 +176,7 @@ public class ImageOperator {
 		return true;
 	}
 
-	boolean setImageBrightness(int brightness) {
+	public boolean setImageBrightness(int brightness) {
 		if (brightness < -100 || brightness > 100) {
 			Log.logInfo("The image brightness out of range [-100, 100]");
 			return false;
@@ -184,7 +185,7 @@ public class ImageOperator {
 		return true;
 	}
 
-	boolean setImageContrast(int contrast) {
+	public boolean setImageContrast(int contrast) {
 		if (contrast < -100 || contrast > 100) {
 			Log.logInfo("The image contrast out of range [-100, 100]");
 			return false;
@@ -194,7 +195,7 @@ public class ImageOperator {
 	}
 
 	//
-	boolean setJpgImageRelativeQuality(int quality) {
+	public boolean setJpgImageRelativeQuality(int quality) {
 		if (quality < 1 || quality > 1000) {
 			Log.logInfo("The Jpg image relative quality out of the range [1, 1000]");
 			return false;
@@ -203,7 +204,7 @@ public class ImageOperator {
 		return true;
 	}
 
-	boolean setJpgImageAbsolutelyQuality(int quality) {
+	public boolean setJpgImageAbsolutelyQuality(int quality) {
 		if (quality < 1 || quality > 1000) {
 			Log.logInfo("The Jpg image absolute quality out of the range [1, 1000]");
 			return false;
@@ -212,7 +213,7 @@ public class ImageOperator {
 		return true;
 	}
 
-	boolean setJpgProgressive(ProgressiveType progressive) {
+	public boolean setJpgProgressive(ProgressiveType progressive) {
 		if (progressive == null) {
 			Log.logInfo("The Jpg image progressive type error");
 			return false;
@@ -222,7 +223,7 @@ public class ImageOperator {
 	}
 
 	//
-	boolean setImageFormat(ImageFormat imageFormat) {
+	public boolean setImageFormat(ImageFormat imageFormat) {
 		if (imageFormat == null) {
 			Log.logInfo("The image format settings failure");
 			return false;
@@ -308,10 +309,7 @@ public class ImageOperator {
 
 		}
 		JSONObject json = JSONObject.fromObject(keyValues);
-		System.out.println(json.toString());//
-
-//		return Base64Util.encodeBase64(json.toString().getBytes());
-		return json.toString();
+		return Base64Util.encodeBase64(json.toString().getBytes());
 	}
 	
 	public static void main(String[] args) {
@@ -319,7 +317,6 @@ public class ImageOperator {
 		PropertyConfigurator.configure("log4j.properties");
 		ImageOperator imageOperator =  new ImageOperator();
 		imageOperator.setImageContrast(1);
-		System.err.println(imageOperator.toString());
 		
 	}
 

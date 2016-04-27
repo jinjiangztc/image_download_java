@@ -8,18 +8,21 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.ArrayList;
+import java.util.List;
 
+import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
+import com.runimg.api.imagedownload.module.ImageType;
+import com.runimg.api.imagedownload.module.Record;
 import com.runimg.api.imagedownload.module.UpdateStanza;
 
 public class RunimgService {
 
-	private static final String baseUrl = "http://www.runimg.com/services.php/lastupdate?";
-
 	public static UpdateStanza getImageUrl(String urlBase, UrlCreator urlCreator) {
 
-		String server_url = urlBase + urlCreator.toString();
+		String server_url = urlBase + urlCreator.toUrlString();
 		// 构造URL
 
 		try {
@@ -48,7 +51,8 @@ public class RunimgService {
 
 	}
 
-	public static boolean getImageByUrl(String imageUrl) {
+	public static boolean getImageByUrl(String imageUrl, String savePath,
+			String filename) {
 		try {
 
 			// 构造URL
@@ -65,19 +69,19 @@ public class RunimgService {
 			// 读取到的数据长度
 			int len;
 			// 输出的文件流
-			// // File sf = new File(savePath);
-			// if (!sf.exists()) {
-			// sf.mkdirs();
-			// }
-			// OutputStream os = new FileOutputStream(sf.getPath() + "\\"
-			// + filename);
-			// // 开始读取
-			// while ((len = is.read(bs)) != -1) {
-			// os.write(bs, 0, len);
-			// }
-			// // 完毕，关闭所有链接
-			// os.close();
-			// is.close();
+			File sf = new File(savePath);
+			if (!sf.exists()) {
+				sf.mkdirs();
+			}
+			OutputStream os = new FileOutputStream(sf.getPath() + "\\"
+					+ filename);
+			// 开始读取
+			while ((len = is.read(bs)) != -1) {
+				os.write(bs, 0, len);
+			}
+			// 完毕，关闭所有链接
+			os.close();
+			is.close();
 			return true;
 		} catch (Exception exception) {
 			throw new RuntimeException(exception.getMessage(), exception);
@@ -86,11 +90,23 @@ public class RunimgService {
 	}
 
 	private static UpdateStanza parseStanza(String html) {
-		JSONObject jsonObject = JSONObject.fromObject(html);
 
-		UpdateStanza updateStanza = (UpdateStanza) JSONObject.toBean(
-				jsonObject, UpdateStanza.class);
-		return updateStanza;
+		UpdateStanza result = null;
+		JSONObject jsonObject = JSONObject.fromObject(html);
+		JSONArray jsonRecord = jsonObject.getJSONArray("record");
+		List<Record> records = new ArrayList<Record>();
+
+		result = new UpdateStanza();
+		result.setStatus(Integer.parseInt(jsonObject.getString("status")));
+		for (Object object : jsonRecord) {
+			Record record = (Record) JSONObject.toBean((JSONObject) object,
+					Record.class);
+			record.setUrl(record.getUrl().replaceAll("\\\\", ""));
+			records.add(record);
+		}
+		result.setRecords(records);
+
+		return result;
 	}
 
 }
