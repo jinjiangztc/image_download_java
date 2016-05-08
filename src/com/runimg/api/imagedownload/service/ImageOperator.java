@@ -16,7 +16,7 @@ import com.runimg.api.imagedownload.util.Log;
 
 public class ImageOperator {
 
-	private static final int NOT_ASSIGNMENT = 0xffffffff;
+	private static final int NOT_ASSIGNMENT = 0x8fffffff;
 	private static final int MAX_IMAGE_PROCESS_SIZE = 4096;
 	private static final int MIN_IMAGE_PROCESS_SIZE = 1;
 	private static final int MIN_PROPORTION_VALUE = 1;
@@ -118,7 +118,8 @@ public class ImageOperator {
 
 	}
 
-	public boolean setImageClipper(int chunk, ClipperDirect clipper_direct, int index) {
+	public boolean setImageClipper(int chunk, ClipperDirect clipper_direct,
+			int index) {
 
 		this.clipperChunk = chunk;
 		this.clipperDirect = clipper_direct;
@@ -311,13 +312,41 @@ public class ImageOperator {
 		JSONObject json = JSONObject.fromObject(keyValues);
 		return Base64Util.encodeBase64(json.toString().getBytes());
 	}
-	
+
+	public void reset() {
+		zoomHeight = NOT_ASSIGNMENT;
+		zoomWidth = NOT_ASSIGNMENT;
+		isProcess = NOT_ASSIGNMENT;
+		proportion = NOT_ASSIGNMENT;
+		clipperHeight = NOT_ASSIGNMENT;
+		clipperWidth = NOT_ASSIGNMENT;
+		clipperRect = NOT_ASSIGNMENT;
+		rotation = NOT_ASSIGNMENT;
+		imageSharpen = NOT_ASSIGNMENT;
+		blurryRadius = NOT_ASSIGNMENT;
+		blurrySigma = NOT_ASSIGNMENT;
+		brightness = NOT_ASSIGNMENT;
+		contrast = NOT_ASSIGNMENT;
+		jpgRelativeQulity = NOT_ASSIGNMENT;
+		jpgAbsolutelyQulity = NOT_ASSIGNMENT;
+		imageFormat = ImageFormat.FORMAT_SRC;
+		clipperRadius = NOT_ASSIGNMENT;
+		clipperType = ClipperType.SOURCE;
+		clipperChunk = NOT_ASSIGNMENT;
+		clipperDirect = ClipperDirect.CLIPPER_X;
+		clipperIndex = NOT_ASSIGNMENT;
+		clipperX = NOT_ASSIGNMENT;
+		clipperY = NOT_ASSIGNMENT;
+		clipperW = NOT_ASSIGNMENT;
+		clipperH = NOT_ASSIGNMENT;
+	}
+
 	public static void main(String[] args) {
-		
+
 		PropertyConfigurator.configure("log4j.properties");
-		ImageOperator imageOperator =  new ImageOperator();
+		ImageOperator imageOperator = new ImageOperator();
 		imageOperator.setImageContrast(1);
-		
+
 	}
 
 }
