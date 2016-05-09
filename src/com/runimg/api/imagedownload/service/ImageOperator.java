@@ -75,6 +75,11 @@ public class ImageOperator {
 
 		return true;
 	}
+	
+	public boolean setImageZoom(int height, int width)
+	{
+		return setImageZoom(height, width, false);
+	}
 
 	public boolean setImageZoom(int proportion) {
 		if (proportion < MIN_PROPORTION_VALUE
@@ -129,10 +134,10 @@ public class ImageOperator {
 	}
 
 	public boolean setImageClipper(int x, int y, int width, int height) {
-		if (clipperW < MIN_IMAGE_PROCESS_SIZE
-				|| clipperW > MAX_IMAGE_PROCESS_SIZE
-				|| clipperH < MIN_IMAGE_PROCESS_SIZE
-				|| clipperH > MAX_IMAGE_PROCESS_SIZE) {
+		if (width < MIN_IMAGE_PROCESS_SIZE
+				|| width > MAX_IMAGE_PROCESS_SIZE
+				|| height < MIN_IMAGE_PROCESS_SIZE
+				|| height > MAX_IMAGE_PROCESS_SIZE) {
 			Log.logInfo("The Clipper width or height out of the range [1, 4096]");
 			return false;
 		}
@@ -164,11 +169,11 @@ public class ImageOperator {
 	}
 
 	public boolean setImageBlurry(int radius, int sigma) {
-		if (blurryRadius < 1 || blurryRadius > 50) {
+		if (radius < 1 ||radius > 50) {
 			Log.logInfo("The Blurry radius out of the range [1, 50]");
 			return false;
 		}
-		if (blurrySigma < 1 || blurrySigma > 50) {
+		if (sigma < 1 || sigma > 50) {
 			Log.logInfo("The Blurry sigma out of the range [1, 50]");
 			return false;
 		}
@@ -242,7 +247,7 @@ public class ImageOperator {
 		if (zoomWidth != NOT_ASSIGNMENT) {
 			keyValues.put("w", zoomWidth);
 		}
-		if (isProcess != NOT_ASSIGNMENT) {
+		if (isProcess == 0) {
 			keyValues.put("l", 0);
 		}
 		if (proportion != NOT_ASSIGNMENT) {

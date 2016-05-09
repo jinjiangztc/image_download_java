@@ -40,7 +40,7 @@ public enum ImageFormat {
 		@Override
 		public String imageFormatToString() {
 
-			return "git";
+			return "gif";
 		}
 	};
 

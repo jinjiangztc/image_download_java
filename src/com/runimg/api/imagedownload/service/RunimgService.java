@@ -93,7 +93,7 @@ public class RunimgService {
 
 		UpdateStanza result = null;
 		JSONObject jsonObject = JSONObject.fromObject(html);
-		JSONArray jsonRecord = jsonObject.getJSONArray("record");
+		JSONArray jsonRecord = jsonObject.getJSONArray("records");
 		List<Record> records = new ArrayList<Record>();
 
 		result = new UpdateStanza();
