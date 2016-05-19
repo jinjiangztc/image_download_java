@@ -14,6 +14,10 @@ import com.runimg.api.imagedownload.module.ProgressiveType;
 import com.runimg.api.imagedownload.util.Base64Util;
 import com.runimg.api.imagedownload.util.Log;
 
+/**
+ * 
+ * @author jinjiangztc@gmail.com
+ */
 public class ImageOperator {
 
 	private static final int NOT_ASSIGNMENT = 0x8fffffff;
@@ -56,6 +60,16 @@ public class ImageOperator {
 	int clipperH = NOT_ASSIGNMENT;
 	ProgressiveType progressive = null;
 
+	/**
+	 * 
+	 * @param height
+	 *            图片长度
+	 * @param width
+	 *            图片宽度
+	 * @param isProcess
+	 *            目标图大于原图是否处理
+	 * @return 是否设置成功
+	 */
 	public boolean setImageZoom(int height, int width, boolean isProcess) {
 
 		if (height < MIN_IMAGE_PROCESS_SIZE || height > MAX_IMAGE_PROCESS_SIZE
@@ -75,9 +89,16 @@ public class ImageOperator {
 
 		return true;
 	}
-	
-	public boolean setImageZoom(int height, int width)
-	{
+
+	/**
+	 * 
+	 * @param height
+	 *            图片长度
+	 * @param width
+	 *            图片宽度
+	 * @return 是否设置成功
+	 */
+	public boolean setImageZoom(int height, int width) {
 		return setImageZoom(height, width, false);
 	}
 
@@ -92,7 +113,16 @@ public class ImageOperator {
 		return true;
 	}
 
-	//
+	/**
+	 * 
+	 * @param height
+	 *            图片长度
+	 * @param width
+	 *            图片宽度
+	 * @param rect
+	 *            指定裁剪区域
+	 * @return 是否设置成功
+	 */
 	public boolean setImageClipper(int height, int width, int rect) {
 		if (height < MIN_IMAGE_PROCESS_SIZE || height > MAX_PROPORTION_VALUE
 				|| width < MIN_IMAGE_PROCESS_SIZE
@@ -107,6 +137,14 @@ public class ImageOperator {
 		return true;
 	}
 
+	/**
+	 * 
+	 * @param radius
+	 *            内切圆半径
+	 * @param clipperType
+	 *            裁剪类型
+	 * @return
+	 */
 	public boolean setImageClipper(int radius, ClipperType clipperType) {
 
 		if (radius < 1 || radius > 4096) {
@@ -123,19 +161,40 @@ public class ImageOperator {
 
 	}
 
-	public boolean setImageClipper(int chunk, ClipperDirect clipper_direct,
+	/**
+	 * 
+	 * @param chunk
+	 *            切割长度
+	 * @param clipperDirect
+	 *            裁剪类型
+	 * @param index
+	 *            索引切割
+	 * @return 是否设置成功
+	 */
+	public boolean setImageClipper(int chunk, ClipperDirect clipperDirect,
 			int index) {
 
 		this.clipperChunk = chunk;
-		this.clipperDirect = clipper_direct;
+		this.clipperDirect = clipperDirect;
 		this.clipperIndex = index;
 
 		return true;
 	}
 
+	/**
+	 * 
+	 * @param x
+	 *            起点x坐标
+	 * @param y
+	 *            y起点y坐标
+	 * @param width
+	 *            图片宽度
+	 * @param height
+	 *            图片高度
+	 * @return 是否设置成功
+	 */
 	public boolean setImageClipper(int x, int y, int width, int height) {
-		if (width < MIN_IMAGE_PROCESS_SIZE
-				|| width > MAX_IMAGE_PROCESS_SIZE
+		if (width < MIN_IMAGE_PROCESS_SIZE || width > MAX_IMAGE_PROCESS_SIZE
 				|| height < MIN_IMAGE_PROCESS_SIZE
 				|| height > MAX_IMAGE_PROCESS_SIZE) {
 			Log.logInfo("The Clipper width or height out of the range [1, 4096]");
@@ -149,7 +208,13 @@ public class ImageOperator {
 		return true;
 	}
 
-	//
+	/**
+	 * 
+	 * @param rotation
+	 *            旋转角度
+	 * @return 是否设置成功
+	 */
+
 	public boolean setImageRotator(int rotation) {
 		if (rotation > 360 || rotation < 0) {
 			Log.logInfo("The rotation out of the range [0, 360]");
@@ -159,17 +224,31 @@ public class ImageOperator {
 		return true;
 	}
 
-	//
+	/**
+	 * 
+	 * @param sharpening
+	 *            锐化度
+	 * @return 是否设置成功
+	 */
 	public boolean setImageSharpen(int sharpening) {
 		if (sharpening < 50 || sharpening > 399) {
 			Log.logInfo("The image sharpen out of the range [50, 399]");
+			return false;
 		}
 		this.imageSharpen = sharpening;
 		return true;
 	}
 
+	/**
+	 *
+	 * @param radius
+	 *            模糊的半径
+	 * @param sigma
+	 *            正态分布的标准差
+	 * @return 是否设置成功
+	 */
 	public boolean setImageBlurry(int radius, int sigma) {
-		if (radius < 1 ||radius > 50) {
+		if (radius < 1 || radius > 50) {
 			Log.logInfo("The Blurry radius out of the range [1, 50]");
 			return false;
 		}
@@ -182,6 +261,12 @@ public class ImageOperator {
 		return true;
 	}
 
+	/**
+	 * 
+	 * @param brightness
+	 *            原图亮度
+	 * @return 是否设置成功
+	 */
 	public boolean setImageBrightness(int brightness) {
 		if (brightness < -100 || brightness > 100) {
 			Log.logInfo("The image brightness out of range [-100, 100]");
@@ -191,6 +276,12 @@ public class ImageOperator {
 		return true;
 	}
 
+	/**
+	 * 
+	 * @param contrast
+	 *            对比度调节
+	 * @return 是否设置成功
+	 */
 	public boolean setImageContrast(int contrast) {
 		if (contrast < -100 || contrast > 100) {
 			Log.logInfo("The image contrast out of range [-100, 100]");
@@ -200,7 +291,12 @@ public class ImageOperator {
 		return true;
 	}
 
-	//
+	/**
+	 * 
+	 * @param quality
+	 *            质量压缩
+	 * @return 是否设置成功
+	 */
 	public boolean setJpgImageRelativeQuality(int quality) {
 		if (quality < 1 || quality > 1000) {
 			Log.logInfo("The Jpg image relative quality out of the range [1, 1000]");
@@ -209,6 +305,13 @@ public class ImageOperator {
 		this.jpgRelativeQulity = quality;
 		return true;
 	}
+
+	/**
+	 * 
+	 * @param quality
+	 *            原图质量质量
+	 * @return 是否设置成功
+	 */
 
 	public boolean setJpgImageAbsolutelyQuality(int quality) {
 		if (quality < 1 || quality > 1000) {
@@ -219,6 +322,11 @@ public class ImageOperator {
 		return true;
 	}
 
+	/**
+	 * 
+	 * @param progressive	具体jpg格式
+	 * @return	是否设置成功
+	 */
 	public boolean setJpgProgressive(ProgressiveType progressive) {
 		if (progressive == null) {
 			Log.logInfo("The Jpg image progressive type error");
@@ -228,7 +336,11 @@ public class ImageOperator {
 		return true;
 	}
 
-	//
+	/**
+	 * 
+	 * @param imageFormat 图片格式
+	 * @return 是否设置成功
+	 */
 	public boolean setImageFormat(ImageFormat imageFormat) {
 		if (imageFormat == null) {
 			Log.logInfo("The image format settings failure");
@@ -238,6 +350,9 @@ public class ImageOperator {
 		return true;
 	}
 
+	/**
+	 * @return 讲设置好的参数转化成json,然后进行Base64处理返回
+	 */
 	public String toString() {
 		Map<String, Object> keyValues = new HashMap<String, Object>();
 		// 1. Zoom Settings
@@ -317,6 +432,10 @@ public class ImageOperator {
 		JSONObject json = JSONObject.fromObject(keyValues);
 		return Base64Util.encodeBase64(json.toString().getBytes());
 	}
+
+	/**
+	 * 初始化设置
+	 */
 
 	public void reset() {
 		zoomHeight = NOT_ASSIGNMENT;

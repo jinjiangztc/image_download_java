@@ -15,6 +15,10 @@ import com.runimg.api.imagedownload.module.ImageType;
 import com.runimg.api.imagedownload.util.Base64Util;
 import com.runimg.api.imagedownload.util.Log;
 
+/**
+ * 
+ * @author jinjiangztc@gmail.com
+ */
 public class UrlCreator {
 
 	private static final String MAC_NAME = "HmacSHA1";
@@ -31,6 +35,20 @@ public class UrlCreator {
 	private Long startTime;
 	private Long endTime;
 
+	/**
+	 * 构造方法
+	 * 
+	 * @param tokenId
+	 *            用户tokenId
+	 * @param secretKey
+	 *            用户密码
+	 * @param imageType
+	 *            图片类型
+	 * @param expired
+	 *            生成的有效时间
+	 * @param imageOperator
+	 *            ImageOperator 对象
+	 */
 	public UrlCreator(String tokenId, String secretKey, ImageType imageType,
 			int expired, ImageOperator imageOperator) {
 		super();
@@ -44,6 +62,10 @@ public class UrlCreator {
 
 	}
 
+	/**
+	 * 
+	 * @return 请求地址
+	 */
 	public final String toUrlString() {
 
 		Map<String, Object> keyValues = new HashMap<String, Object>();
@@ -54,9 +76,9 @@ public class UrlCreator {
 		if (imageOperator != null) {
 			keyValues.put("img_opt", imageOperator.toString());
 		}
-		 keyValues.put("timestamp", String.valueOf(timestamp/1000));
-		 keyValues.put("version", version);
-		 keyValues.put("rec_inv", recordIntervalTime());
+		keyValues.put("timestamp", String.valueOf(timestamp / 1000));
+		keyValues.put("version", version);
+		keyValues.put("rec_inv", recordIntervalTime());
 		keyValues.put("signature", calculateSignature(keyValues, secretKey));
 		return calculateParameters(keyValues);
 
@@ -109,12 +131,7 @@ public class UrlCreator {
 		return keyString;
 	}
 
-	public String ImageTypeToString(ImageType image_type) {
-		return null;
-
-	}
-
-	String recordIntervalTime() {
+	private String recordIntervalTime() {
 
 		Map<String, Object> keyValues = new HashMap<String, Object>();
 		keyValues.put("st", startTime);
@@ -123,7 +140,7 @@ public class UrlCreator {
 		return Base64Util.encodeBase64(json.toString().getBytes());
 	}
 
-	public static byte[] HmacSHA1Encrypt(String encryptText, String encryptKey) {
+	private static byte[] HmacSHA1Encrypt(String encryptText, String encryptKey) {
 		try {
 			byte[] data = encryptKey.getBytes(ENCODING);
 			// 根据给定的字节数组构造一个密钥,第二参数指定一个密钥算法的名称
@@ -141,9 +158,18 @@ public class UrlCreator {
 		}
 		return null;
 	}
+
+	/**
+	 * 
+	 * @param startTime
+	 *            开始时间
+	 * @param endTime
+	 *            截止时间
+	 * @return 是否设置成功
+	 */
 	public boolean setRecordInterval(Long startTime, Long endTime) {
-		  this.startTime = startTime;
-		  this.endTime   = endTime;
-		  return true;
-		}
+		this.startTime = startTime;
+		this.endTime = endTime;
+		return true;
+	}
 }

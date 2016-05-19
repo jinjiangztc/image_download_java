@@ -2,23 +2,29 @@ package com.runimg.api.imagedownload.module;
 
 import java.util.List;
 
+/**
+ * 
+ * @author jinjiangztc@gmail.com
+ */
 public class UpdateStanza {
 
 	int status;
 	List<Record> records;
+
 	public int getStatus() {
 		return status;
 	}
+
 	public void setStatus(int status) {
 		this.status = status;
 	}
+
 	public List<Record> getRecords() {
 		return records;
 	}
+
 	public void setRecords(List<Record> records) {
 		this.records = records;
 	}
-	
-	
 
 }

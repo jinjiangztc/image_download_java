@@ -18,8 +18,20 @@ import com.runimg.api.imagedownload.module.ImageType;
 import com.runimg.api.imagedownload.module.Record;
 import com.runimg.api.imagedownload.module.UpdateStanza;
 
+/**
+ * 
+ * @author jinjiangztc@gmail.com
+ */
 public class RunimgService {
 
+	/**
+	 * 
+	 * @param urlBase
+	 *            基础url
+	 * @param urlCreator
+	 *            用户生成的UrlCreator对象
+	 * @return
+	 */
 	public static UpdateStanza getImageUrl(String urlBase, UrlCreator urlCreator) {
 
 		String server_url = urlBase + urlCreator.toUrlString();
@@ -51,6 +63,16 @@ public class RunimgService {
 
 	}
 
+	/**
+	 * 
+	 * @param imageUrl
+	 *            下载图片的url地址
+	 * @param savePath
+	 *            保存路径
+	 * @param filename
+	 *            保存文件名
+	 * @return 是否下载成功
+	 */
 	public static boolean getImageByUrl(String imageUrl, String savePath,
 			String filename) {
 		try {
