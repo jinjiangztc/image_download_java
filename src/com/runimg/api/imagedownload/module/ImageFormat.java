@@ -1,5 +1,11 @@
 package com.runimg.api.imagedownload.module;
 
+/**
+ * 图片格式
+ * 
+ * @author jinjiangztc@gmail.com
+ *
+ */
 public enum ImageFormat {
 	FORMAT_SRC {
 		@Override

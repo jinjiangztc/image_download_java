@@ -43,7 +43,7 @@ public class UrlCreator {
 	 * @param secretKey
 	 *            用户密码
 	 * @param imageType
-	 *            图片类型
+	 *            图片类型 [ImageType枚举实例]
 	 * @param expired
 	 *            生成的有效时间
 	 * @param imageOperator
@@ -160,6 +160,7 @@ public class UrlCreator {
 	}
 
 	/**
+	 * 设置获取改时间端的记录
 	 * 
 	 * @param startTime
 	 *            开始时间

@@ -376,7 +376,7 @@ public class ImageOperator {
 	}
 
 	/**
-	 * @return 讲设置好的参数转化成json,然后进行Base64处理返回
+	 * @return 将设置好的参数转化成json,然后进行Base64处理返回
 	 */
 	public String toString() {
 		Map<String, Object> keyValues = new HashMap<String, Object>();

@@ -10,11 +10,8 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
-
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
-
-import com.runimg.api.imagedownload.module.ImageType;
 import com.runimg.api.imagedownload.module.Record;
 import com.runimg.api.imagedownload.module.UpdateStanza;
 
@@ -25,6 +22,7 @@ import com.runimg.api.imagedownload.module.UpdateStanza;
 public class RunimgService {
 
 	/**
+	 * 获取图片地址列表
 	 * 
 	 * @param urlBase
 	 *            基础url
@@ -64,6 +62,7 @@ public class RunimgService {
 	}
 
 	/**
+	 * 根据图片地址下载图片
 	 * 
 	 * @param imageUrl
 	 *            下载图片的url地址

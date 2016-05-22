@@ -1,5 +1,11 @@
 package com.runimg.api.imagedownload.module;
 
+/**
+ * 设置具体jpg格式
+ * 
+ * @author jinjiangztc@gmail.com
+ *
+ */
 public  enum ProgressiveType {
 	ENABLE_PROGRESSIVE {
 		@Override

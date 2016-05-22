@@ -1,5 +1,11 @@
 package com.runimg.api.imagedownload.module;
 
+/**
+ * 图片类型
+ * 
+ * @author jinjiangztc@gmail.com
+ *
+ */
 public enum ImageType {
 	TYPE_1D {
 		@Override
