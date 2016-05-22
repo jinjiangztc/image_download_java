@@ -18,7 +18,7 @@ public class Test {
 		UrlCreator urlCreator = new UrlCreator("123456789ABCDEF0",
 				"0123456789ABCDEF", ImageType.TYPE_2D_0_0, 3600, imageOperator);
 		urlCreator.setRecordInterval(0L, 0L);
-		System.err.println(urlCreator.toUrlString());
+//		System.err.println(urlCreator.toUrlString());
 		UpdateStanza updateStanza = RunimgService.getImageUrl(
 				"http://www.runimg.com/services.php/lastupdate?", urlCreator);
 

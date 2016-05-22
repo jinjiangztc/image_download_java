@@ -20,7 +20,7 @@ import com.runimg.api.imagedownload.util.Log;
  */
 public class ImageOperator {
 
-	private static final int NOT_ASSIGNMENT = 0x8fffffff;
+	public static final int NOT_ASSIGNMENT = 0x8fffffff;
 	private static final int MAX_IMAGE_PROCESS_SIZE = 4096;
 	private static final int MIN_IMAGE_PROCESS_SIZE = 1;
 	private static final int MIN_PROPORTION_VALUE = 1;
@@ -61,7 +61,7 @@ public class ImageOperator {
 	ProgressiveType progressive = null;
 
 	/**
-	 * 单边固定缩放
+	 * 单边固定缩放  如果对height固定，width设置为ImageOperator.NOT_ASSIGNMENT,如果对width固定，height设置为ImageOperator.NOT_ASSIGNMENT,
 	 * 
 	 * @param height
 	 *            图片长度 [1~4096]
@@ -92,7 +92,7 @@ public class ImageOperator {
 	}
 
 	/**
-	 * 单边固定缩放
+	 * 单边固定缩放 单边固定缩放  如果对height固定，width设置为ImageOperator.NOT_ASSIGNMENT,如果对width固定，height设置为ImageOperator.NOT_ASSIGNMENT,
 	 * 
 	 * @param height
 	 *            图片长度 [1~4096]
@@ -150,7 +150,7 @@ public class ImageOperator {
 	}
 
 	/**
-	 * 圆形裁剪
+	 * 内切圆裁剪或圆角矩形裁剪
 	 * 
 	 * @param radius
 	 *            内切圆半径 [1, 4096]
@@ -178,7 +178,7 @@ public class ImageOperator {
 	 * 索引切割
 	 * 
 	 * @param chunk
-	 *            切割长度
+	 *            切割长度  length:[1,切割边边长]，单位px。如果超出切割边的大小，返回原图。
 	 * @param clipperDirect
 	 *            裁剪类型
 	 * @param index
@@ -188,6 +188,10 @@ public class ImageOperator {
 	public boolean setImageClipper(int chunk, ClipperDirect clipperDirect,
 			int index) {
 
+		if (chunk < 1 ) {
+			Log.logInfo("The chunk out of the range [1, ~]");
+			return false;
+		}
 		this.clipperChunk = chunk;
 		this.clipperDirect = clipperDirect;
 		this.clipperIndex = index;
@@ -315,11 +319,11 @@ public class ImageOperator {
 	 * 图片的相对质量
 	 * 
 	 * @param quality
-	 *            质量压缩 [1, 1000]
+	 *            质量压缩 [1, 100]
 	 * @return 是否设置成功
 	 */
 	public boolean setJpgImageRelativeQuality(int quality) {
-		if (quality < 1 || quality > 1000) {
+		if (quality < 1 || quality > 100) {
 			Log.logInfo("The Jpg image relative quality out of the range [1, 1000]");
 			return false;
 		}
@@ -331,12 +335,12 @@ public class ImageOperator {
 	 * 图片的绝对质量
 	 * 
 	 * @param quality
-	 *            原图质量质量 [1, 1000]
+	 *            原图质量质量 [1, 100]
 	 * @return 是否设置成功
 	 */
 
 	public boolean setJpgImageAbsolutelyQuality(int quality) {
-		if (quality < 1 || quality > 1000) {
+		if (quality < 1 || quality > 100) {
 			Log.logInfo("The Jpg image absolute quality out of the range [1, 1000]");
 			return false;
 		}

@@ -63,6 +63,7 @@ public class UrlCreator {
 	}
 
 	/**
+	 * 生成对应的请求参数
 	 * 
 	 * @return 请求地址
 	 */
