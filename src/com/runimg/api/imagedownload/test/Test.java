@@ -14,7 +14,7 @@ public class Test {
 	public static void main(String[] args) {
 		PropertyConfigurator.configure("log4j.properties");
 		ImageOperator imageOperator = new ImageOperator();
-		System.err.println(imageOperator.setImageClipper(225, 225, 16, 16));;
+		System.err.println(imageOperator.setImageClipper(225, 225, 16, 16));
 		UrlCreator urlCreator = new UrlCreator("123456789ABCDEF0",
 				"0123456789ABCDEF", ImageType.TYPE_2D_0_0, 3600, imageOperator);
 		urlCreator.setRecordInterval(0L, 0L);

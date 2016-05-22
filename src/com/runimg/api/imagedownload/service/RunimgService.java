@@ -28,7 +28,7 @@ public class RunimgService {
 	 *            基础url
 	 * @param urlCreator
 	 *            用户生成的UrlCreator对象
-	 * @return
+	 * @return updateStanza实例
 	 */
 	public static UpdateStanza getImageUrl(String urlBase, UrlCreator urlCreator) {
 
