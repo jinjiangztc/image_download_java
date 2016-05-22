@@ -59,7 +59,7 @@ public class FinalTest {
 		 }
 		String htmlContent = generatorHtml(tests);
 		saveFile(htmlContent);
-		show("haha.html");
+		show("view.html");
 		// return
 	}
 

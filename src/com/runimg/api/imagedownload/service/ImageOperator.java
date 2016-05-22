@@ -61,13 +61,14 @@ public class ImageOperator {
 	ProgressiveType progressive = null;
 
 	/**
+	 * 单边固定缩放
 	 * 
 	 * @param height
-	 *            图片长度
+	 *            图片长度 [1~4096]
 	 * @param width
-	 *            图片宽度
+	 *            图片宽度 [1~4096]
 	 * @param isProcess
-	 *            目标图大于原图是否处理
+	 *            目标图大于原图是否处理,1表示不处理，0表示处理，默认为0
 	 * @return 是否设置成功
 	 */
 	public boolean setImageZoom(int height, int width, boolean isProcess) {
@@ -91,16 +92,26 @@ public class ImageOperator {
 	}
 
 	/**
+	 * 单边固定缩放
 	 * 
 	 * @param height
-	 *            图片长度
+	 *            图片长度 [1~4096]
 	 * @param width
-	 *            图片宽度
+	 *            图片宽度 [1~4096]
 	 * @return 是否设置成功
 	 */
 	public boolean setImageZoom(int height, int width) {
 		return setImageZoom(height, width, false);
 	}
+
+	/**
+	 * 按比例缩放图片
+	 * 
+	 * @param proportion
+	 *            百分比参数 [1~1000]
+	 * 
+	 * @return 是否设置成功
+	 */
 
 	public boolean setImageZoom(int proportion) {
 		if (proportion < MIN_PROPORTION_VALUE
@@ -114,13 +125,14 @@ public class ImageOperator {
 	}
 
 	/**
+	 * 指定区域裁剪
 	 * 
 	 * @param height
-	 *            图片长度
+	 *            图片长度 [1~4096]
 	 * @param width
-	 *            图片宽度
+	 *            图片宽度 [1~4096]
 	 * @param rect
-	 *            指定裁剪区域
+	 *            指定裁剪区域 [1~9]
 	 * @return 是否设置成功
 	 */
 	public boolean setImageClipper(int height, int width, int rect) {
@@ -138,12 +150,13 @@ public class ImageOperator {
 	}
 
 	/**
+	 * 圆形裁剪
 	 * 
 	 * @param radius
-	 *            内切圆半径
+	 *            内切圆半径 [1, 4096]
 	 * @param clipperType
-	 *            裁剪类型
-	 * @return
+	 *            [SOURCE,MIN_SQUARE,ROUND_RECTANGLE] 裁剪类型
+	 * @return 是否设置成功
 	 */
 	public boolean setImageClipper(int radius, ClipperType clipperType) {
 
@@ -162,6 +175,7 @@ public class ImageOperator {
 	}
 
 	/**
+	 * 索引切割
 	 * 
 	 * @param chunk
 	 *            切割长度
@@ -182,11 +196,12 @@ public class ImageOperator {
 	}
 
 	/**
+	 * 高级裁剪 可以通过指定起始横坐标，纵坐标及裁剪的宽度和裁剪的高度对图进行高级裁剪。
 	 * 
 	 * @param x
-	 *            起点x坐标
+	 *            起点x坐标 [1~4096]
 	 * @param y
-	 *            y起点y坐标
+	 *            y起点y坐标 [1~4096]
 	 * @param width
 	 *            图片宽度
 	 * @param height
@@ -209,9 +224,10 @@ public class ImageOperator {
 	}
 
 	/**
+	 * 图片进行按顺时针旋转
 	 * 
 	 * @param rotation
-	 *            旋转角度
+	 *            旋转角度 [0,360]
 	 * @return 是否设置成功
 	 */
 
@@ -225,9 +241,10 @@ public class ImageOperator {
 	}
 
 	/**
+	 * 对图片进行锐化处理
 	 * 
 	 * @param sharpening
-	 *            锐化度
+	 *            锐化度 [50,399]
 	 * @return 是否设置成功
 	 */
 	public boolean setImageSharpen(int sharpening) {
@@ -240,11 +257,12 @@ public class ImageOperator {
 	}
 
 	/**
-	 *
+	 * 对图片进行模糊操作
+	 * 
 	 * @param radius
-	 *            模糊的半径
+	 *            模糊的半径 [1,50]
 	 * @param sigma
-	 *            正态分布的标准差
+	 *            正态分布的标准差 [1,50]
 	 * @return 是否设置成功
 	 */
 	public boolean setImageBlurry(int radius, int sigma) {
@@ -262,9 +280,10 @@ public class ImageOperator {
 	}
 
 	/**
+	 * 对图片进行亮度调节
 	 * 
 	 * @param brightness
-	 *            原图亮度
+	 *            原图亮度 [-100,100]
 	 * @return 是否设置成功
 	 */
 	public boolean setImageBrightness(int brightness) {
@@ -277,9 +296,10 @@ public class ImageOperator {
 	}
 
 	/**
+	 * 对图片进行对比调节
 	 * 
 	 * @param contrast
-	 *            对比度调节
+	 *            对比度调节[-100,100]
 	 * @return 是否设置成功
 	 */
 	public boolean setImageContrast(int contrast) {
@@ -292,9 +312,10 @@ public class ImageOperator {
 	}
 
 	/**
+	 * 图片的相对质量
 	 * 
 	 * @param quality
-	 *            质量压缩
+	 *            质量压缩 [1, 1000]
 	 * @return 是否设置成功
 	 */
 	public boolean setJpgImageRelativeQuality(int quality) {
@@ -307,9 +328,10 @@ public class ImageOperator {
 	}
 
 	/**
+	 * 图片的绝对质量
 	 * 
 	 * @param quality
-	 *            原图质量质量
+	 *            原图质量质量 [1, 1000]
 	 * @return 是否设置成功
 	 */
 
@@ -323,9 +345,11 @@ public class ImageOperator {
 	}
 
 	/**
+	 * 设置具体jpg格式
 	 * 
-	 * @param progressive	具体jpg格式
-	 * @return	是否设置成功
+	 * @param progressive
+	 *            具体jpg格式 [ENABLE_PROGRESSIVE,DISABLE_PROGRESSIVE,]
+	 * @return 是否设置成功
 	 */
 	public boolean setJpgProgressive(ProgressiveType progressive) {
 		if (progressive == null) {
@@ -338,7 +362,8 @@ public class ImageOperator {
 
 	/**
 	 * 
-	 * @param imageFormat 图片格式
+	 * @param imageFormat
+	 *            图片格式
 	 * @return 是否设置成功
 	 */
 	public boolean setImageFormat(ImageFormat imageFormat) {
