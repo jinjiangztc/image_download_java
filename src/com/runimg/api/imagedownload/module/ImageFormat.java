@@ -3,7 +3,7 @@ package com.runimg.api.imagedownload.module;
 /**
  * 图片格式
  * 
- * @author jinjiangztc@gmail.com
+ * @author 3458968481@qq.com
  *
  */
 public enum ImageFormat {

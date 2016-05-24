@@ -4,7 +4,7 @@ import java.util.List;
 
 /**
  * 
- * @author jinjiangztc@gmail.com
+ * @author 3458968481@qq.com
  */
 public class UpdateStanza {
 

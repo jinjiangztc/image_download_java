@@ -2,7 +2,7 @@ package com.runimg.api.imagedownload.module;
 /**
  * 裁剪类型
  * 
- * @author jinjiangztc@gmail.com
+ * @author 3458968481@qq.com
  *
  */
 public enum ClipperType {

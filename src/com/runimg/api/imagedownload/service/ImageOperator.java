@@ -16,7 +16,7 @@ import com.runimg.api.imagedownload.util.Log;
 
 /**
  * 
- * @author jinjiangztc@gmail.com
+ * @author 3458968481@qq.com
  */
 public class ImageOperator {
 
